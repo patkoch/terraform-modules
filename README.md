@@ -1,6 +1,6 @@
 ﻿# Terraform Azure Modules
 
-A collection of production-ready Terraform modules for deploying and managing Azure resources, with a focus on Azure AI Services and Cognitive Services.
+A collection of Terraform modules for deploying and managing Azure resources
 
 ## Overview
 
