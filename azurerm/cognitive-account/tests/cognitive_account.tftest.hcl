@@ -26,6 +26,16 @@ run "happy_path_openai_minimal" {
     condition     = azurerm_cognitive_account.this.sku_name == "S0"
     error_message = "Cognitive account SKU name should be 'S0'."
   }
+
+  assert {
+    condition     = azurerm_cognitive_account.this.local_auth_enabled == false
+    error_message = "local_auth_enabled should default to false."
+  }
+
+  assert {
+    condition     = azurerm_cognitive_account.this.public_network_access_enabled == false
+    error_message = "public_network_access_enabled should default to false."
+  }
 }
 
 # Happy Path 2: Valid configuration with SystemAssigned identity and custom subdomain
@@ -62,6 +72,11 @@ run "happy_path_with_identity" {
   assert {
     condition     = azurerm_cognitive_account.this.local_auth_enabled == false
     error_message = "local_auth_enabled should be false."
+  }
+
+  assert {
+    condition     = azurerm_cognitive_account.this.public_network_access_enabled == false
+    error_message = "public_network_access_enabled should be false."
   }
 }
 
