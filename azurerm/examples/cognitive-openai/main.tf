@@ -24,7 +24,7 @@ module "cognitive_account" {
 
   custom_subdomain_name = "open-ai-test-west-europe"
 
-  # Enable System Assigned Identity for better security
+  # Enable System Assigned Identity for better security 
   identity = {
     type = "SystemAssigned"
   }

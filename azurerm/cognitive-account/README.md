@@ -14,7 +14,7 @@ This Terraform module creates an Azure Cognitive Services Account. It supports a
 - Configurable timeouts
 - Comprehensive input validation
 
-## Usage Examples
+## Usage Examples 
 
 ### OpenAI Account with Standard SKU
 
