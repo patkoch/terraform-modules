@@ -66,7 +66,7 @@ variable "dynamic_throttling_enabled" {
 variable "local_auth_enabled" {
   description = "Whether local authentication methods is enabled for the Cognitive Account"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "outbound_network_access_restricted" {
@@ -78,7 +78,7 @@ variable "outbound_network_access_restricted" {
 variable "public_network_access_enabled" {
   description = "Whether public network access is allowed for the Cognitive Account"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "project_management_enabled" {

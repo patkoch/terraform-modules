@@ -1,4 +1,5 @@
 ﻿resource "azurerm_cognitive_account" "this" {
+  #checkov:skip=CKV2_AZURE_22: "Customer-managed key encryption requires a user-provided Key Vault key ID and cannot be enforced by the module itself. Configure the customer_managed_key variable to comply with this policy."
   name                = var.name
   location            = var.location
   resource_group_name = var.resource_group_name
