@@ -1,0 +1,163 @@
+name: Terraform Module CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "azurerm/resource-group/**"
+      - "azurerm/cognitive-account/**"
+      - "azurerm/cognitive-deployment/**"
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Detect which modules have changed so subsequent jobs only run for those
+  # ──────────────────────────────────────────────────────────────────────────
+  detect-changes:
+    name: Detect Changed Modules
+    runs-on: ubuntu-latest
+    outputs:
+      modules: ${{ steps.set-matrix.outputs.modules }}
+      any-changed: ${{ steps.set-matrix.outputs.any-changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed files
+        id: changed-files
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            resource-group:
+              - 'azurerm/resource-group/**'
+            cognitive-account:
+              - 'azurerm/cognitive-account/**'
+            cognitive-deployment:
+              - 'azurerm/cognitive-deployment/**'
+
+      - name: Build module matrix
+        id: set-matrix
+        run: |
+          MODULES=()
+          if [ "${{ steps.changed-files.outputs.resource-group }}" == "true" ]; then
+            MODULES+=("resource-group")
+          fi
+          if [ "${{ steps.changed-files.outputs.cognitive-account }}" == "true" ]; then
+            MODULES+=("cognitive-account")
+          fi
+          if [ "${{ steps.changed-files.outputs.cognitive-deployment }}" == "true" ]; then
+            MODULES+=("cognitive-deployment")
+          fi
+
+          if [ ${#MODULES[@]} -eq 0 ]; then
+            echo "modules=[]" >> "$GITHUB_OUTPUT"
+            echo "any-changed=false" >> "$GITHUB_OUTPUT"
+          else
+            # Build JSON array, e.g. ["resource-group","cognitive-account"]
+            JSON=$(printf '"%s",' "${MODULES[@]}" | sed 's/,$//')
+            echo "modules=[${JSON}]" >> "$GITHUB_OUTPUT"
+            echo "any-changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # GitLeaks – scan the entire PR diff for secrets
+  # ──────────────────────────────────────────────────────────────────────────
+  gitleaks:
+    name: GitLeaks – Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run GitLeaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # TFLint – lint each changed module
+  # ──────────────────────────────────────────────────────────────────────────
+  tflint:
+    name: TFLint – ${{ matrix.module }}
+    needs: detect-changes
+    if: needs.detect-changes.outputs.any-changed == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJson(needs.detect-changes.outputs.modules) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: latest
+
+      - name: Init TFLint
+        run: tflint --init
+        working-directory: azurerm/${{ matrix.module }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run TFLint
+        run: tflint --format compact
+        working-directory: azurerm/${{ matrix.module }}
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Checkov – IaC security & compliance scan for each changed module
+  # ──────────────────────────────────────────────────────────────────────────
+  checkov:
+    name: Checkov – ${{ matrix.module }}
+    needs: detect-changes
+    if: needs.detect-changes.outputs.any-changed == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJson(needs.detect-changes.outputs.modules) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: azurerm/${{ matrix.module }}
+          framework: terraform
+          output_format: cli
+          soft_fail: false
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Terraform Tests – run only for the module that changed
+  # ──────────────────────────────────────────────────────────────────────────
+  terraform-test:
+    name: Terraform Tests – ${{ matrix.module }}
+    needs: detect-changes
+    if: needs.detect-changes.outputs.any-changed == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJson(needs.detect-changes.outputs.modules) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.13"
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: azurerm/${{ matrix.module }}
+
+      - name: Terraform Test
+        run: terraform test
+        working-directory: azurerm/${{ matrix.module }}

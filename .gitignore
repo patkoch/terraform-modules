@@ -11,8 +11,9 @@
 *.tfplan
 *.tf.plan
 
-# HCL variable files
+# HCL variable files (but not Terraform test files)
 *.hcl
+!*.tftest.hcl
 
 # IDE
 .vscode/
