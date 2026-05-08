@@ -1,4 +1,4 @@
-﻿output "id" {
+output "id" {
   description = "The ID of the Cognitive Service Account"
   value       = azurerm_cognitive_account.this.id
 }

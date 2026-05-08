@@ -1,4 +1,4 @@
-﻿resource "azurerm_cognitive_account" "this" {
+resource "azurerm_cognitive_account" "this" {
   #checkov:skip=CKV2_AZURE_22: "Customer-managed key encryption requires a user-provided Key Vault key ID and cannot be enforced by the module itself. Configure the customer_managed_key variable to comply with this policy."
   name                = var.name
   location            = var.location
@@ -8,8 +8,8 @@
 
   custom_subdomain_name = var.custom_subdomain_name
 
-  dynamic_throttling_enabled = var.dynamic_throttling_enabled
-  local_auth_enabled         = var.local_auth_enabled
+  dynamic_throttling_enabled         = var.dynamic_throttling_enabled
+  local_auth_enabled                 = var.local_auth_enabled
   outbound_network_access_restricted = var.outbound_network_access_restricted
   public_network_access_enabled      = var.public_network_access_enabled
   project_management_enabled         = var.project_management_enabled
@@ -17,10 +17,10 @@
   fqdns = var.fqdns
 
   # MetricsAdvisor specific properties
-  metrics_advisor_aad_client_id     = var.metrics_advisor_aad_client_id
-  metrics_advisor_aad_tenant_id     = var.metrics_advisor_aad_tenant_id
-  metrics_advisor_super_user_name   = var.metrics_advisor_super_user_name
-  metrics_advisor_website_name      = var.metrics_advisor_website_name
+  metrics_advisor_aad_client_id   = var.metrics_advisor_aad_client_id
+  metrics_advisor_aad_tenant_id   = var.metrics_advisor_aad_tenant_id
+  metrics_advisor_super_user_name = var.metrics_advisor_super_user_name
+  metrics_advisor_website_name    = var.metrics_advisor_website_name
 
   # QnAMaker properties
   qna_runtime_endpoint = var.qna_runtime_endpoint

@@ -1,4 +1,4 @@
-﻿variable "name" {
+variable "name" {
   description = "The name of the Cognitive Service Account"
   type        = string
   nullable    = false
@@ -11,8 +11,8 @@
 
 variable "location" {
   description = "The Azure region where the Cognitive Service Account should be created"
-  type        = string
-  nullable    = false
+  type     = string
+  nullable = false
 }
 
 variable "resource_group_name" {
@@ -145,7 +145,7 @@ variable "identity" {
   default = null
 
   validation {
-    condition = var.identity == null || contains(["SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned"], var.identity.type)
+    condition     = var.identity == null || contains(["SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned"], var.identity.type)
     error_message = "Identity type must be one of: SystemAssigned, UserAssigned, or 'SystemAssigned, UserAssigned'."
   }
 }
@@ -164,12 +164,12 @@ variable "network_acls" {
   default = null
 
   validation {
-    condition = var.network_acls == null || contains(["Allow", "Deny"], var.network_acls.default_action)
+    condition     = var.network_acls == null || contains(["Allow", "Deny"], var.network_acls.default_action)
     error_message = "default_action must be either Allow or Deny."
   }
 
   validation {
-    condition = var.network_acls == null || var.network_acls.bypass == null || contains(["None", "AzureServices"], var.network_acls.bypass)
+    condition     = var.network_acls == null || var.network_acls.bypass == null || contains(["None", "AzureServices"], var.network_acls.bypass)
     error_message = "bypass must be either None or AzureServices."
   }
 }
@@ -183,7 +183,7 @@ variable "network_injection" {
   default = null
 
   validation {
-    condition = var.network_injection == null || var.network_injection.scenario == "agent"
+    condition     = var.network_injection == null || var.network_injection.scenario == "agent"
     error_message = "scenario must be 'agent'."
   }
 }
