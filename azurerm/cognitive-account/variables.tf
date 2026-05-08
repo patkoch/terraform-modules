@@ -11,7 +11,7 @@ variable "name" {
 
 variable "location" {
   description = "The Azure region where the Cognitive Service Account should be created"
-  type     = string
+  #type     = string
   nullable = false
 }
 
