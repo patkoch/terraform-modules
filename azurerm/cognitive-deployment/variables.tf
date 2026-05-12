@@ -8,6 +8,7 @@ variable "cognitive_account_id" {
   description = "The ID of the Cognitive Services Account"
   type        = string
   nullable    = false
+  # comment
 }
 
 variable "model_format" {
