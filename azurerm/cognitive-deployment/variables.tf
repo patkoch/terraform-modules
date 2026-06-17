@@ -1,6 +1,6 @@
 ﻿variable "deployment_name" {
   description = "The name of the Cognitive Services Account Deployment"
-  type        = string
+  #type        = string
   nullable    = false
 }
 
