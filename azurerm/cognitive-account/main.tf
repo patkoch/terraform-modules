@@ -1,5 +1,17 @@
+locals {
+  normalized_instances = {
+    for key, value in var.instances : key => merge({
+      dynamic_throttling_enabled         = true
+      local_auth_enabled                 = false
+      outbound_network_access_restricted = false
+      public_network_access_enabled      = false
+      project_management_enabled         = false
+    }, value)
+  }
+}
+
 resource "azurerm_cognitive_account" "this" {
-  for_each = var.instances
+  for_each = local.normalized_instances
 
   #checkov:skip=CKV2_AZURE_22: "Customer-managed key encryption requires a user-provided Key Vault key ID and cannot be enforced by the module itself. Configure the customer_managed_key variable to comply with this policy."
   name                = each.value.name
@@ -11,10 +23,10 @@ resource "azurerm_cognitive_account" "this" {
   custom_subdomain_name = each.value.custom_subdomain_name
 
   dynamic_throttling_enabled         = each.value.dynamic_throttling_enabled
-  local_auth_enabled                 = coalesce(each.value.local_auth_enabled, false)
-  outbound_network_access_restricted = coalesce(each.value.outbound_network_access_restricted, false)
-  public_network_access_enabled      = coalesce(each.value.public_network_access_enabled, false)
-  project_management_enabled         = coalesce(each.value.project_management_enabled, false)
+  local_auth_enabled                 = each.value.local_auth_enabled
+  outbound_network_access_restricted = each.value.outbound_network_access_restricted
+  public_network_access_enabled      = each.value.public_network_access_enabled
+  project_management_enabled         = each.value.project_management_enabled
 
   fqdns = each.value.fqdns
 
