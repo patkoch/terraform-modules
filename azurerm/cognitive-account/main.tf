@@ -11,10 +11,10 @@ resource "azurerm_cognitive_account" "this" {
   custom_subdomain_name = each.value.custom_subdomain_name
 
   dynamic_throttling_enabled         = each.value.dynamic_throttling_enabled
-  local_auth_enabled                 = each.value.local_auth_enabled
-  outbound_network_access_restricted = each.value.outbound_network_access_restricted
-  public_network_access_enabled      = each.value.public_network_access_enabled
-  project_management_enabled         = each.value.project_management_enabled
+  local_auth_enabled                 = coalesce(each.value.local_auth_enabled, false)
+  outbound_network_access_restricted = coalesce(each.value.outbound_network_access_restricted, false)
+  public_network_access_enabled      = coalesce(each.value.public_network_access_enabled, false)
+  project_management_enabled         = coalesce(each.value.project_management_enabled, false)
 
   fqdns = each.value.fqdns
 
