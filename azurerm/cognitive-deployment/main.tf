@@ -1,29 +1,31 @@
-﻿resource "azurerm_cognitive_deployment" "this" {
-  name                 = var.deployment_name
-  cognitive_account_id = var.cognitive_account_id
+resource "azurerm_cognitive_deployment" "this" {
+  for_each = var.instances
+
+  name                 = each.value.deployment_name
+  cognitive_account_id = each.value.cognitive_account_id
 
   model {
-    format  = var.model_format
-    name    = var.model_name
-    version = var.model_version
+    format  = each.value.model_format
+    name    = each.value.model_name
+    version = each.value.model_version
   }
 
   sku {
-    name     = var.sku_name
-    tier     = var.sku_tier
-    size     = var.sku_size
-    family   = var.sku_family
-    capacity = var.sku_capacity
+    name     = each.value.sku_name
+    tier     = each.value.sku_tier
+    size     = each.value.sku_size
+    family   = each.value.sku_family
+    capacity = each.value.sku_capacity
   }
 
-  dynamic_throttling_enabled = var.dynamic_throttling_enabled
-  rai_policy_name            = var.rai_policy_name
-  version_upgrade_option     = var.version_upgrade_option
+  dynamic_throttling_enabled = each.value.dynamic_throttling_enabled
+  rai_policy_name            = each.value.rai_policy_name
+  version_upgrade_option     = each.value.version_upgrade_option
 
   timeouts {
-    create = var.timeout_create
-    read   = var.timeout_read
-    update = var.timeout_update
-    delete = var.timeout_delete
+    create = each.value.timeout_create
+    read   = each.value.timeout_read
+    update = each.value.timeout_update
+    delete = each.value.timeout_delete
   }
 }

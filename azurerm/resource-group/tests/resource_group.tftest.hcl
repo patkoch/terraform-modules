@@ -1,46 +1,58 @@
 mock_provider "azurerm" {}
 
-# Happy Path 1: Minimal valid configuration
+# Happy Path 1: Minimal valid configuration with a single instance
 run "happy_path_minimal" {
   command = plan
 
   variables {
-    name     = "my-resource-group"
-    location = "West Europe"
-  }
-
-  assert {
-    condition     = azurerm_resource_group.this.name == "my-resource-group"
-    error_message = "Resource group name should be 'my-resource-group'."
-  }
-
-  assert {
-    condition     = azurerm_resource_group.this.location == "West Europe"
-    error_message = "Resource group location should be 'West Europe'."
-  }
-}
-
-# Happy Path 2: Valid configuration with tags
-run "happy_path_with_tags" {
-  command = plan
-
-  variables {
-    name     = "rg-production-001"
-    location = "East US"
-    tags = {
-      Environment = "Production"
-      ManagedBy   = "Terraform"
-      Project     = "MyProject"
+    instances = {
+      rg_primary = {
+        name     = "my-resource-group"
+        location = "West Europe"
+      }
     }
   }
 
   assert {
-    condition     = azurerm_resource_group.this.name == "rg-production-001"
-    error_message = "Resource group name should be 'rg-production-001'."
+    condition     = azurerm_resource_group.this["rg_primary"].name == "my-resource-group"
+    error_message = "Resource group name should be 'my-resource-group'."
   }
 
   assert {
-    condition     = azurerm_resource_group.this.tags["Environment"] == "Production"
+    condition     = azurerm_resource_group.this["rg_primary"].location == "West Europe"
+    error_message = "Resource group location should be 'West Europe'."
+  }
+}
+
+# Happy Path 2: Multiple instances with tags
+run "happy_path_multiple_instances" {
+  command = plan
+
+  variables {
+    instances = {
+      rg_prod = {
+        name     = "rg-production-001"
+        location = "East US"
+        tags = {
+          Environment = "Production"
+          ManagedBy   = "Terraform"
+          Project     = "MyProject"
+        }
+      }
+      rg_dev = {
+        name     = "rg-development-001"
+        location = "West Europe"
+      }
+    }
+  }
+
+  assert {
+    condition     = length(azurerm_resource_group.this) == 2
+    error_message = "Exactly two resource groups should be planned."
+  }
+
+  assert {
+    condition     = azurerm_resource_group.this["rg_prod"].tags["Environment"] == "Production"
     error_message = "Tag 'Environment' should be 'Production'."
   }
 }
@@ -50,9 +62,13 @@ run "non_happy_path_invalid_name" {
   command = plan
 
   variables {
-    name     = "invalid name with spaces!"
-    location = "West Europe"
+    instances = {
+      bad_rg = {
+        name     = "invalid name with spaces!"
+        location = "West Europe"
+      }
+    }
   }
 
-  expect_failures = [var.name]
+  expect_failures = [var.instances]
 }
