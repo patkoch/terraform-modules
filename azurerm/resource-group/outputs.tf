@@ -1,14 +1,14 @@
-﻿output "id" {
-  description = "The ID of the Resource Group"
-  value       = azurerm_resource_group.this.id
+output "ids" {
+  description = "Map of Resource Group IDs keyed by instance name"
+  value       = { for k, v in azurerm_resource_group.this : k => v.id }
 }
 
-output "name" {
-  description = "The name of the Resource Group"
-  value       = azurerm_resource_group.this.name
+output "names" {
+  description = "Map of Resource Group names keyed by instance name"
+  value       = { for k, v in azurerm_resource_group.this : k => v.name }
 }
 
-output "location" {
-  description = "The location of the Resource Group"
-  value       = azurerm_resource_group.this.location
+output "locations" {
+  description = "Map of Resource Group locations keyed by instance name"
+  value       = { for k, v in azurerm_resource_group.this : k => v.location }
 }

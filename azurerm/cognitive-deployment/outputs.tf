@@ -1,9 +1,9 @@
-﻿output "id" {
-  description = "The ID of the Deployment for Azure Cognitive Services Account"
-  value       = azurerm_cognitive_deployment.this.id
+output "ids" {
+  description = "Map of Cognitive Service Deployment IDs keyed by instance name"
+  value       = { for k, v in azurerm_cognitive_deployment.this : k => v.id }
 }
 
-output "name" {
-  description = "The name of the Cognitive Services Account Deployment"
-  value       = azurerm_cognitive_deployment.this.name
+output "names" {
+  description = "Map of Cognitive Service Deployment names keyed by instance name"
+  value       = { for k, v in azurerm_cognitive_deployment.this : k => v.name }
 }
