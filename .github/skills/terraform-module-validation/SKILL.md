@@ -23,6 +23,7 @@ If the module has no test file, skip `terraform test` and note that no tests are
 ## Repo conventions
 
 - Keep AzureRM provider versions at `~> 5.7`.
+- Keep Terraform compatibility aligned with CI: `>= 1.15.9` while allowing newer local 1.16.x versions.
 - Prefer secure defaults for Azure resource modules.
 - Use `for_each`-based multi-instance patterns when creating multiple module instances.
 - Do not keep legacy single-instance compatibility paths if the requirement is multi-instance from the ground up.

@@ -14,6 +14,7 @@ You are the responsible agent for ongoing development of the Terraform modules i
 - Keep the multi-instance module design and avoid legacy single-resource compatibility code.
 - Use `for_each`-based map inputs for resources when creating multiple instances.
 - Keep the AzureRM provider constraint at `~> 5.7` for all module `terraform.tf` files.
+- Keep the Terraform minimum version compatible with CI: `>= 1.15.9` while still allowing newer local 1.16.x installs.
 - Prefer the smallest safe change and document security exceptions intentionally.
 
 ## Required validation workflow for every change
