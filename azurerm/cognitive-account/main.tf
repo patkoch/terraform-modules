@@ -13,6 +13,8 @@ locals {
 resource "azurerm_cognitive_account" "this" {
   for_each = local.normalized_instances
 
+  #checkov:skip=CKV_AZURE_236: "Module default is to disable local authentication; override only when explicitly required."
+  #checkov:skip=CKV_AZURE_134: "Module default is to restrict public network access; override only when explicitly required."
   #checkov:skip=CKV2_AZURE_22: "Customer-managed key encryption requires a user-provided Key Vault key ID and cannot be enforced by the module itself. Configure the customer_managed_key variable to comply with this policy."
   name                = each.value.name
   location            = each.value.location
