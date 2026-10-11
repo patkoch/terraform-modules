@@ -35,7 +35,7 @@ Cognitive Deployment:
 
 ## Prerequisites
 
-- Terraform >= 1.15.9
+- Terraform >= 1.13
 - AzureRM Provider ~> 5.9
 - Azure CLI or Service Principal configured
 - Authentication with Azure (`az login` or environment variables)

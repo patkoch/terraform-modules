@@ -198,7 +198,7 @@ module "deployment" {
 
 All modules require:
 
-- **Terraform:** >= 1.15.9
+- **Terraform:** >= 1.13
 - **AzureRM Provider:** ~> 5.9
 - **Azure Authentication:** Configured via Azure CLI or Service Principal
 
@@ -357,7 +357,7 @@ To add new modules or improve existing ones:
 
 ## Version Compatibility
 
-- Terraform 1.15.9 or higher
+- Terraform 1.13 or higher
 - AzureRM Provider ~> 5.9
 - Tested with latest Azure API versions (2025-06-01 for Cognitive Services)
 

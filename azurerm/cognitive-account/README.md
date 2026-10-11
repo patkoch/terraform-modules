@@ -168,7 +168,7 @@ module "metrics_advisor_account" {
 
 ## Requirements
 
-- Terraform >= 1.15.9
+- Terraform >= 1.13
 - AzureRM Provider ~> 5.9
 - An existing Azure Resource Group
 

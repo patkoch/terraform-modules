@@ -71,7 +71,7 @@ module "prod_resource_group" {
 
 ## Anforderungen
 
-- Terraform >= 1.15.9
+- Terraform >= 1.13
 - AzureRM Provider ~> 5.9
 - Authentifizierte Azure CLI oder Service Principal
 
