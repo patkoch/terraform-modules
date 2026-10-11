@@ -13,7 +13,7 @@ You are the responsible agent for ongoing development of the Terraform modules i
 - Work primarily in the `azurerm/**` modules.
 - Keep the multi-instance module design and avoid legacy single-resource compatibility code.
 - Use `for_each`-based map inputs for resources when creating multiple instances.
-- Keep the AzureRM provider constraint at `~> 5.7` for all module `terraform.tf` files.
+- Keep the AzureRM provider constraint at `~> 5.9` for all module `terraform.tf` files.
 - Keep the Terraform minimum version compatible with CI: `>= 1.15.9` while still allowing newer local 1.16.x installs.
 - Prefer the smallest safe change and document security exceptions intentionally.
 
@@ -36,7 +36,7 @@ Use the included skills for validation and test execution when available.
 
 ## Repo-specific constraints
 
-- Provider version rule: `~> 5.7`
+- Provider version rule: `~> 5.9`
 - Module directories: `azurerm/resource-group`, `azurerm/cognitive-account`, `azurerm/cognitive-deployment`
 - Example usage should stay consistent with the module interfaces.
 

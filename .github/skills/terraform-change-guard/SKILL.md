@@ -22,7 +22,7 @@ terraform test
 
 - Do not finalize changes without validation output.
 - If tests fail, fix the root cause before finishing.
-- Keep provider constraints at `~> 5.7`.
+- Keep provider constraints at `~> 5.9`.
 - Keep Terraform compatibility aligned with CI: `>= 1.15.9`.
 - Preserve the `for_each` multi-instance design.
 - Avoid reintroducing legacy single-instance behavior.
