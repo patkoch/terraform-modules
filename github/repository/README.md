@@ -8,8 +8,7 @@ Like the `azurerm` modules, this module uses a map-based (`for_each`) pattern: a
 ## Features
 
 - Create and manage repositories (`github_repository`)
-- Secure defaults: `private`, vulnerability alerts enabled, `archive_on_destroy = true` (preserves data on `terraform destroy`), and branches deleted after merging
-- Vulnerability alerts managed through the dedicated `github_repository_vulnerability_alerts` resource
+- Secure defaults: `private`, `archive_on_destroy = true` (preserves data on `terraform destroy`), and branches deleted after merging
 - Optional default branch (`github_branch_default`)
 - Topics, merge strategies, template repositories, `.gitignore` and license templates
 - Input validation (name, visibility, topics, merge methods, and unique names)
@@ -48,7 +47,6 @@ Attributes for each repository:
 | `allow_update_branch` | `true` | "Update branch" button |
 | `delete_branch_on_merge` | `true` | Delete the head branch after merging |
 | `web_commit_signoff_required` | `false` | Require sign-off for web commits |
-| `vulnerability_alerts` | `true` | Dependabot vulnerability alerts |
 | `archive_on_destroy` | `true` | Archive instead of deleting on destroy |
 | `archived` | `false` | Archive the repository |
 | `default_branch` | `null` | Set the default branch (the branch must exist) |
@@ -200,6 +198,6 @@ terraform test
 
 The tests use `mock_provider "github"` and therefore do **not** require a token:
 
-1. `minimal_repository_secure_defaults` – secure defaults (private, vulnerability alerts, archive_on_destroy, no default-branch resource)
+1. `minimal_repository_secure_defaults` – secure defaults (private, delete_branch_on_merge, archive_on_destroy, no default-branch resource)
 2. `multiple_repositories_with_options` – multiple repositories, topics, template, disabled merge method, default branch
 3. `invalid_name_and_visibility_rejected` – invalid name/visibility rejected by validation
