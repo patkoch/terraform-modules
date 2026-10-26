@@ -1,86 +1,86 @@
 # GitHub Repository Module
 
-Terraform-Modul zur Verwaltung von GitHub Repositories mit dem Provider
-[`integrations/github`](https://registry.terraform.io/providers/integrations/github/latest/docs) (`~> 6.13`, getestet mit v6.13.0).
+Terraform module for managing GitHub repositories with the
+[`integrations/github`](https://registry.terraform.io/providers/integrations/github/latest/docs) (`~> 6.13`, tested with v6.13.0).
 
-Das Modul ist – wie die `azurerm`-Module – map-basiert (`for_each`): Mit einem Aufruf können beliebig viele Repositories verwaltet werden.
+Like the `azurerm` modules, this module uses a map-based (`for_each`) pattern: any number of repositories can be managed in a single module call.
 
 ## Features
 
-- Erstellen und Verwalten von Repositories (`github_repository`)
-- Sichere Defaults: `private`, Vulnerability Alerts aktiv, `archive_on_destroy = true` (kein Datenverlust bei `terraform destroy`), Branches werden nach Merge gelöscht
-- Vulnerability Alerts über die dedizierte Ressource `github_repository_vulnerability_alerts`
-- Optionaler Default Branch (`github_branch_default`)
-- Topics, Merge-Strategien, Template-Repositories, `.gitignore`- und Lizenz-Templates
-- Eingabevalidierung (Name, Visibility, Topics, Merge-Methoden, eindeutige Namen)
+- Create and manage repositories (`github_repository`)
+- Secure defaults: `private`, vulnerability alerts enabled, `archive_on_destroy = true` (preserves data on `terraform destroy`), and branches deleted after merging
+- Vulnerability alerts managed through the dedicated `github_repository_vulnerability_alerts` resource
+- Optional default branch (`github_branch_default`)
+- Topics, merge strategies, template repositories, `.gitignore` and license templates
+- Input validation (name, visibility, topics, merge methods, and unique names)
 
-## Dateien
+## Files
 
 ```
 github/repository/
 ├── main.tf / variables.tf / outputs.tf / terraform.tf
-├── tests/repository.tftest.hcl          # 3 Tests (terraform test, mit mock_provider)
-└── examples/basic/                      # Root-Konfiguration inkl. Provider + terraform.tfvars.example
+├── tests/repository.tftest.hcl          # 3 tests (terraform test, using mock_provider)
+└── examples/basic/                      # Root configuration including provider + terraform.tfvars.example
 ```
 
-## Eingaben
+## Inputs
 
-| Variable | Typ | Default | Beschreibung |
+| Variable | Type | Default | Description |
 |----------|-----|---------|--------------|
-| `repositories` | `map(object)` | `{}` | Map der Repositories, Key = logischer Instanzname |
+| `repositories` | `map(object)` | `{}` | Map of repositories, keyed by logical instance name |
 
-Attribute je Repository:
+Attributes for each repository:
 
-| Attribut | Default | Beschreibung |
+| Attribute | Default | Description |
 |----------|---------|--------------|
-| `name` | – (Pflicht) | Repository-Name (1-100 Zeichen, `A-Za-z0-9._-`) |
-| `description` | `null` | Beschreibung |
-| `homepage_url` | `null` | Homepage-URL |
-| `visibility` | `"private"` | `public`, `private` oder `internal` |
-| `topics` | `[]` | Topics (lowercase, `a-z0-9-`, max. 50 Zeichen) |
+| `name` | – (required) | Repository name (1-100 characters, `A-Za-z0-9._-`) |
+| `description` | `null` | Description |
+| `homepage_url` | `null` | Homepage URL |
+| `visibility` | `"private"` | `public`, `private`, or `internal` |
+| `topics` | `[]` | Topics (lowercase, `a-z0-9-`, max. 50 characters) |
 | `has_issues` / `has_projects` / `has_wiki` / `has_discussions` | `true` / `false` / `false` / `false` | Features |
-| `is_template` | `false` | Repository als Template markieren |
-| `auto_init` | `true` | Initialen Commit erzeugen |
-| `gitignore_template` | `null` | z. B. `"Go"`, `"Terraform"` |
-| `license_template` | `null` | z. B. `"mit"`, `"apache-2.0"` |
-| `allow_merge_commit` / `allow_squash_merge` / `allow_rebase_merge` | `true` | Merge-Methoden (mind. eine muss aktiv sein) |
-| `allow_auto_merge` | `false` | Auto-Merge erlauben |
-| `allow_update_branch` | `true` | "Update branch"-Button |
-| `delete_branch_on_merge` | `true` | Head-Branch nach Merge löschen |
-| `web_commit_signoff_required` | `false` | Sign-off für Web-Commits |
-| `vulnerability_alerts` | `true` | Dependabot Vulnerability Alerts |
-| `archive_on_destroy` | `true` | Bei Destroy archivieren statt löschen |
-| `archived` | `false` | Repository archivieren |
-| `default_branch` | `null` | Default Branch setzen (Branch muss existieren) |
+| `is_template` | `false` | Mark the repository as a template |
+| `auto_init` | `true` | Create an initial commit |
+| `gitignore_template` | `null` | e.g. `"Go"`, `"Terraform"` |
+| `license_template` | `null` | e.g. `"mit"`, `"apache-2.0"` |
+| `allow_merge_commit` / `allow_squash_merge` / `allow_rebase_merge` | `true` | Merge methods (at least one must be enabled) |
+| `allow_auto_merge` | `false` | Allow auto-merge |
+| `allow_update_branch` | `true` | "Update branch" button |
+| `delete_branch_on_merge` | `true` | Delete the head branch after merging |
+| `web_commit_signoff_required` | `false` | Require sign-off for web commits |
+| `vulnerability_alerts` | `true` | Dependabot vulnerability alerts |
+| `archive_on_destroy` | `true` | Archive instead of deleting on destroy |
+| `archived` | `false` | Archive the repository |
+| `default_branch` | `null` | Set the default branch (the branch must exist) |
 | `template` | `null` | `{ owner, repository, include_all_branches = false }` |
 
 ## Outputs
 
-`names`, `full_names`, `html_urls`, `ssh_clone_urls`, `http_clone_urls`, `repo_ids`, `node_ids` – jeweils Maps, Key = Instanzname.
+`names`, `full_names`, `html_urls`, `ssh_clone_urls`, `http_clone_urls`, `repo_ids`, `node_ids` – each is a map keyed by instance name.
 
-## Anleitung: Nutzung mit Personal Access Token (PAT)
+## Using a Personal Access Token (PAT)
 
-### 1. PAT erstellen
+### 1. Create a PAT
 
 GitHub → *Settings* → *Developer settings* → *Personal access tokens*:
 
-- **Fine-grained token (empfohlen):** Resource owner = dein User bzw. deine Organisation, Repository access = *All repositories*.
-  Permissions (Repository): **Administration: Read and write**, **Contents: Read and write**, **Metadata: Read-only**.
-- **Classic token:** Scope **`repo`** (für Org-Repos ggf. zusätzlich `read:org`; für das Löschen von Repositories `delete_repo`, falls `archive_on_destroy = false`).
+- **Fine-grained token (recommended):** Resource owner = your user account or organization, Repository access = *All repositories*.
+  Repository permissions: **Administration: Read and write**, **Contents: Read and write**, **Metadata: Read-only**.
+- **Classic token:** Scope **`repo`** (for organization repositories, you may also need `read:org`; to delete repositories, use `delete_repo` if `archive_on_destroy = false`).
 
-### 2. Token per Umgebungsvariable setzen
+### 2. Set the token as an environment variable
 
-Der GitHub-Provider liest das Token automatisch aus der Umgebungsvariable **`GITHUB_TOKEN`**. Das Token gehört **niemals** in `.tf`- oder `terraform.tfvars`-Dateien.
+The GitHub provider automatically reads the token from the **`GITHUB_TOKEN`** environment variable. **Never** put the token in `.tf` or `terraform.tfvars` files.
 
 Linux / macOS (bash/zsh):
 
 ```bash
 export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
-# optional statt github_owner in terraform.tfvars:
+# optionally set this instead of github_owner in terraform.tfvars:
 export GITHUB_OWNER="patkoch"
 ```
 
-Ohne das Token in der Shell-History zu speichern:
+To avoid storing the token in shell history:
 
 ```bash
 read -rs GITHUB_TOKEN && export GITHUB_TOKEN
@@ -93,30 +93,30 @@ $env:GITHUB_TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxx"
 $env:GITHUB_OWNER = "patkoch"
 ```
 
-Mit GitHub CLI (bereits eingeloggt):
+Using the GitHub CLI (already authenticated):
 
 ```bash
 export GITHUB_TOKEN="$(gh auth token)"
 ```
 
-Der Provider-Block benötigt dann kein `token`-Argument:
+The provider block does not need a `token` argument:
 
 ```hcl
 provider "github" {
-  owner = var.github_owner # oder GITHUB_OWNER
+  owner = var.github_owner # or GITHUB_OWNER
 }
 ```
 
-### 3. Konfiguration mit `terraform.tfvars` parametrisieren
+### 3. Parameterize the configuration with `terraform.tfvars`
 
-Im Beispiel `examples/basic` liegt die Vorlage `terraform.tfvars.example`:
+The `examples/basic` directory contains a `terraform.tfvars.example` template:
 
 ```bash
 cd github/repository/examples/basic
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-Beispiel `terraform.tfvars`:
+Example `terraform.tfvars`:
 
 ```hcl
 github_owner = "patkoch"
@@ -151,9 +151,9 @@ repositories = {
 }
 ```
 
-Jeder Key der Map (`demo`, `service`, …) ist der stabile Terraform-Key – den Key später nicht umbenennen, sonst wird das Repository neu erstellt.
+Each map key (`demo`, `service`, …) is a stable Terraform key. Do not rename it later, or Terraform will recreate the repository.
 
-### 4. Ausführen
+### 4. Run Terraform
 
 ```bash
 terraform init
@@ -161,9 +161,9 @@ terraform plan            # terraform.tfvars wird automatisch geladen
 terraform apply
 ```
 
-Andere Variablendateien: `terraform plan -var-file=prod.tfvars`.
+Other variable files: `terraform plan -var-file=prod.tfvars`.
 
-## Direkte Nutzung als Modul
+## Use directly as a module
 
 ```hcl
 provider "github" {
@@ -183,7 +183,7 @@ module "github_repositories" {
 }
 ```
 
-## Bestehende Repositories importieren
+## Import existing repositories
 
 ```bash
 terraform import 'module.repositories.github_repository.this["demo"]' terraform-demo-repo
@@ -198,8 +198,8 @@ terraform validate
 terraform test
 ```
 
-Die Tests nutzen `mock_provider "github"` und benötigen daher **kein** Token:
+The tests use `mock_provider "github"` and therefore do **not** require a token:
 
-1. `minimal_repository_secure_defaults` – sichere Defaults (private, Vulnerability Alerts, archive_on_destroy, kein Default-Branch-Resource)
-2. `multiple_repositories_with_options` – mehrere Repos, Topics, Template, deaktivierte Merge-Methode, Default Branch
-3. `invalid_name_and_visibility_rejected` – ungültiger Name/Visibility wird durch Validierung abgelehnt
+1. `minimal_repository_secure_defaults` – secure defaults (private, vulnerability alerts, archive_on_destroy, no default-branch resource)
+2. `multiple_repositories_with_options` – multiple repositories, topics, template, disabled merge method, default branch
+3. `invalid_name_and_visibility_rejected` – invalid name/visibility rejected by validation
