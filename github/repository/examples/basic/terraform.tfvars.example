@@ -5,10 +5,11 @@ github_owner = "patkoch"
 
 repositories = {
   demo = {
-    name        = "terraform-demo-repo"
-    description = "Repository managed by Terraform"
-    visibility  = "private"
-    topics      = ["terraform", "demo"]
+    name               = "terraform-demo-repo"
+    description        = "Repository managed by Terraform"
+    visibility         = "private"
+    topics             = ["terraform", "demo"]
+    archive_on_destroy = false
   }
 
   service = {
