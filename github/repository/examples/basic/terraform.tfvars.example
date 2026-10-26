@@ -1,0 +1,24 @@
+# Copy this file to terraform.tfvars and adjust the values.
+# Do NOT put your Personal Access Token in here - use the GITHUB_TOKEN environment variable.
+
+github_owner = "patkoch"
+
+repositories = {
+  demo = {
+    name        = "terraform-demo-repo"
+    description = "Repository managed by Terraform"
+    visibility  = "private"
+    topics      = ["terraform", "demo"]
+  }
+
+  service = {
+    name               = "terraform-demo-service"
+    description        = "Service repository with Go .gitignore and MIT license"
+    visibility         = "public"
+    gitignore_template = "Go"
+    license_template   = "mit"
+    has_discussions    = true
+    allow_merge_commit = false
+    allow_rebase_merge = false
+  }
+}
