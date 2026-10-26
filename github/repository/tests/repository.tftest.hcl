@@ -23,8 +23,8 @@ run "minimal_repository_secure_defaults" {
   }
 
   assert {
-    condition     = github_repository_vulnerability_alerts.this["app"].enabled == true && github_repository.this["app"].delete_branch_on_merge == true
-    error_message = "Vulnerability alerts and delete_branch_on_merge must be enabled by default."
+    condition     = github_repository.this["app"].delete_branch_on_merge == true
+    error_message = "delete_branch_on_merge must be enabled by default."
   }
 
   assert {

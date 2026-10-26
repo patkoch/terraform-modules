@@ -39,13 +39,6 @@ resource "github_repository" "this" {
   }
 }
 
-resource "github_repository_vulnerability_alerts" "this" {
-  for_each = var.repositories
-
-  repository = github_repository.this[each.key].name
-  enabled    = each.value.vulnerability_alerts
-}
-
 resource "github_branch_default" "this" {
   for_each = { for k, v in var.repositories : k => v if v.default_branch != null }
 

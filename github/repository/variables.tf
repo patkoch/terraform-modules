@@ -21,7 +21,6 @@ variable "repositories" {
     allow_update_branch         = optional(bool, true)
     delete_branch_on_merge      = optional(bool, true)
     web_commit_signoff_required = optional(bool, false)
-    vulnerability_alerts        = optional(bool, true)
     archive_on_destroy          = optional(bool, true)
     archived                    = optional(bool, false)
     default_branch              = optional(string)
