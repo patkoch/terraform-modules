@@ -199,7 +199,7 @@ module "deployment" {
 All modules require:
 
 - **Terraform:** >= 1.13
-- **AWS RM Provider:** >= 4.60
+- **AzureRM Provider:** ~> 5.12
 - **Azure Authentication:** Configured via Azure CLI or Service Principal
 
 ### Install Azure CLI
